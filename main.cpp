@@ -34,7 +34,7 @@ double ker6[5][5] = {0.0120,0.1253,0.2736,0.1253,0.0120,
 /**
 图像原路径  图像目标路径  选择卷积核 卷积核长度
 */
-void juanji(char* srcPath,char* dstPath,int s,int l){
+int juanji(char* srcPath,char* dstPath,int s,int l){
     //图像的宽度和高度
 	int imgXlen, imgYlen;
 	//图像波段数
@@ -111,11 +111,18 @@ void juanji(char* srcPath,char* dstPath,int s,int l){
                         t +=(double) buffTmp[0][( j + q - l/2) * imgXlen + ( k + p - l/2)] * temp[q*l+p];
                     }
                 }
+                //浮雕 +128
+                if(s == 5){
+                    t += 128;
+                }
+                //乘上参数
                 t *= z;
+                //超过数值范围的处理
                 if(t < 0)
                     t = 0;
                 else if(t > 255)
                     t = 255;
+                //赋值给新图缓存区
                 buffTmp[1][j * imgXlen + k] = (GByte)t;
             }
         }
@@ -130,6 +137,7 @@ void juanji(char* srcPath,char* dstPath,int s,int l){
     //关闭dataset
 	GDALClose(poDstDS);
 	GDALClose(poSrcDS);
+    return 1;
 }
 
 int main()
@@ -137,20 +145,36 @@ int main()
 	//输入图像路径
 	char* srcPath = "lena.jpg";
 	//输出图像的路径
-	//char* dstPath = "lena2.tif";
 	string dp = "lena";
     string dp2 = ".tif";
     string dp3 ;
     std::stringstream ss;
+    //存储每个核的维数
     int ll[] = {0,3,5,3,3,3,5};
     printf("welcome!\n");
+    //循环x形成不同输出文件名
+    for( int x = 1;x <= 6;x++){
+        //拼接输出文件名
+        ss.clear();
+        ss << dp << x << dp2;
+        ss >> dp3;
+        cout << dp3 << endl;
+        if(juanji(srcPath,&dp3[0],x,ll[x])){
+            //回显提示正确
+            cout << dp3 << "  success!"  << endl <<  endl;
+        }else{
+            cout << dp3 << "failed." << endl << endl;
+        }
+    }/*
+    dp = "chouzhu";
     for( int x = 1;x <= 6;x++){
         ss.clear();
         ss << dp << x << dp2;
         ss >> dp3;
         cout << dp3 << endl;
-        juanji(srcPath,&dp3[0],x,ll[x]);
+        juanji("chouzhu.jpg",&dp3[0],x,ll[x]);
         cout << dp3 << "  success!"  << endl <<  endl;
-    }
+    }*/
+    //juanji("chouzhu.jpg","chouzhu.tif",5,3);
 	return 0;
 }
