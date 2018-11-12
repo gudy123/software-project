@@ -165,16 +165,6 @@ int main()
         }else{
             cout << dp3 << "failed." << endl << endl;
         }
-    }/*
-    dp = "chouzhu";
-    for( int x = 1;x <= 6;x++){
-        ss.clear();
-        ss << dp << x << dp2;
-        ss >> dp3;
-        cout << dp3 << endl;
-        juanji("chouzhu.jpg",&dp3[0],x,ll[x]);
-        cout << dp3 << "  success!"  << endl <<  endl;
-    }*/
-    //juanji("chouzhu.jpg","chouzhu.tif",5,3);
+    }
 	return 0;
 }
